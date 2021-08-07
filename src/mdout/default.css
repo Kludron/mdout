@@ -1,0 +1,11 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Georama:wght@200&family=Roboto+Mono&display=swap');
+
+body p {
+    font-family: 'Georama', sans-serif;;
+    color: black;
+    margin-left: 5px;
+}
+body h1, body h2, body h3 {
+    font-family: 'Roboto Mono', monospace;
+}

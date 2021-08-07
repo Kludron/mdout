@@ -1,0 +1,60 @@
+#!/usr/local/bin/python3
+
+import os, sys
+
+DEFAULT_STYLESHEET="default.css"
+ICON_PATH=""
+SVG_ICON=""
+APPLE_ICON=""
+
+def parseBody(fileData):
+
+    body = ""
+
+    for line in fileData:
+        body += parseType(line)
+
+    return body
+
+
+def parseType(line):
+    if line.startswith('###'):
+        return '<h3>{}</h3>\n'.format(line.removeprefix('###').strip())
+    elif line.startswith('##'):
+        return '<h2>{}</h2>\n'.format(line.removeprefix('##').strip())
+    elif line.startswith('#'):
+        return '<h1>{}</h1>\n'.format(line.removeprefix('#').strip())
+    else:
+        return '<p>{}</p>\n'.format(parseLine(line).strip())
+        
+def parseLine(line):
+    return str(line).replace('- [ ]', '<input type="checkbox"></input>')
+
+def convert(inputfile, outputfile):
+
+    title = inputfile.removesuffix('.md')
+    fileData = open(inputfile, 'r').readlines()
+
+    # BoilerPlate Meta data
+    header = '<title>{}</title>\n'.format(title)
+    header += '<meta charset="UTF-8" />\n'
+    header += '<meta name="viewport" content="width=device-width, initial-scale=1" />\n'
+    header += '<meta name="description" content="{}" />\n'.format(title)
+    header += '<meta name="author" content="Anonymous" />\n'.format(title)
+    header += '<meta property="og:title" content="{}" />\n'.format(title)
+    header += '<meta property="og:type" content="website" />\n'
+    header += '<meta property="og:url" content="" />\n'
+    header += '<meta property="og:description" content="{}" />\n'.format(title)
+    header += '<link rel="stylesheet" href="{}" />\n'.format(DEFAULT_STYLESHEET)
+    header += '<link rel="icon" href="{}" />\n'.format(ICON_PATH)
+    header += '<link rel="icon" href="{}" type="image/svg+xml" />\n'.format(SVG_ICON)
+    header += '<link rel="apple-touch-icon" href="{}" />\n'.format(APPLE_ICON)
+    
+    body = parseBody(fileData)
+
+    outfile = open(outputfile, 'w')
+    outfile.write('<!DOCTYPE html>\n<html lang="en">\n <head>{}</head>\n<body>{}</body>\n</html>\n'.format(header, body))
+
+if __name__ == '__main__':
+    convert(sys.argv[1], sys.argv[2])
+        
